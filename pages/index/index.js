@@ -19,16 +19,15 @@ console.log(' onpillDownRefresh',new Date())
 console.log('------>'+e)
  },
 
-  //事件处理函数
-  // bindViewTap: function() {
-  //   wx.navigateTo({
-  //     url: '../logs/logs'
-  //   })
-  // },
  scrolltolower: function () {
    var that = this
    functions.getCity(function (city) {
      functions.fetchFilms.call(that, url, city, that.data.start, pageSize, function (data) { })
+   })
+ }, viewDetail: function (e) {
+   var ds = e.currentTarget.dataset;
+   wx.navigateTo({
+     url: '../detail/detail?id=' + ds.id + '&title=' + ds.title + '&type=ing'
    })
  },
   onLoad: function () {

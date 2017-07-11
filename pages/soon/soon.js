@@ -1,66 +1,59 @@
 // soon.js
+var functions = require('../functions.js')
+var url = 'https://api.douban.com/v2/movie/coming_soon'
+var pageSize = 20
+var app = getApp()
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
-  
+    films: [],
+    hasMore: true,
+    showLoading: true,
+    start: 0,
+    userInfo: {}
   },
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-  
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
   onPullDownRefresh: function () {
-  
+
+    console.log(' onpillDownRefresh', new Date())
+  },
+  scroll: function (e) {
+    console.log('------>' + e)
   },
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-  
+  //事件处理函数
+  // bindViewTap: function() {
+  //   wx.navigateTo({
+  //     url: '../logs/logs'
+  //   })
+  // },
+  scrolltolower: function () {
+    var that = this
+    functions.getCity(function (city) {
+      functions.fetchFilms.call(that, url, city, that.data.start, pageSize, function (data) { })
+    })
+  }, viewDetail: function (e) {
+    var ds = e.currentTarget.dataset;
+    wx.navigateTo({
+      url: '../detail/detail?id=' + ds.id + '&title=' + ds.title + '&type=ing'
+    })
   },
+  onLoad: function () {
+    console.log('onLoad' + this.data.films.length)
+    var that = this
+    //豆瓣加载电影
+    functions.getCity(function (city) {
+      functions.fetchFilms.call(that, url, city, 0, pageSize, function (data) {
+        that.setData({
+          showLoading: false
+        })
+      })
+    }),
 
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-  
+      //调用应用实例的方法获取全局数据
+      app.getUserInfo(function (userInfo) {
+        //更新数据
+        that.setData({
+          userInfo: userInfo
+        })
+      })
   }
 })
